@@ -15,16 +15,15 @@ def get_recommendations(user_skills: list, df: pd.DataFrame, top_n: int = 3) -> 
 
     corpus = df["skills"].tolist() + [user_profile_str]
 
+
     vectorizer = TfidfVectorizer(token_pattern=r"[^,]+")
 
     tfidf_matrix = vectorizer.fit_transform(
         [text.strip() for text in corpus]
     )
 
-
-    user_vector = tfidf_matrix[-1]   
-    item_vectors = tfidf_matrix[:-1]      
-
+    user_vector = tfidf_matrix[-1]       
+    item_vectors = tfidf_matrix[:-1]       
     similarity_scores = cosine_similarity(user_vector, item_vectors).flatten()
 
 
@@ -39,6 +38,7 @@ def get_recommendations(user_skills: list, df: pd.DataFrame, top_n: int = 3) -> 
     top_results = results.head(top_n)
 
     return top_results[["job_role", "skills", "match_percent"]]
+
 
 
 def get_user_input() -> list:
@@ -56,8 +56,6 @@ def get_user_input() -> list:
             skills.append(raw)
         else:
             print("  -> Please enter a non-empty skill.")
-
-
     while True:
         more = input("Add another skill? (press Enter to skip, or type a skill): ").strip()
         if not more:
@@ -86,6 +84,8 @@ def main():
     user_skills = get_user_input()
     recommendations = get_recommendations(user_skills, df, top_n=3)
     display_recommendations(recommendations)
+
+    input("\nPress Enter to exit...")
 
 
 if __name__ == "__main__":
